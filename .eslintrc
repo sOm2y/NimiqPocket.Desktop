@@ -1,0 +1,76 @@
+// {
+//   "parser": "babel-eslint",
+//   "parserOptions": {
+//     "sourceType": "module",
+//     "allowImportExportEverywhere": true
+//   },
+//   "extends": ["airbnb", "prettier", "prettier/flowtype", "prettier/react"],
+//   "env": {
+//     "browser": true,
+//     "node": true
+//   },
+//   "rules": {
+//     "arrow-parens": ["off"],
+//     "compat/compat": "off",
+//     "consistent-return": "off",
+//     "comma-dangle": "off",
+//     "flowtype/boolean-style": ["off", "boolean"],
+//     "flowtype/define-flow-type": "warn",
+//     "flowtype/delimiter-dangle": ["off", "never"],
+//     "flowtype/generic-spacing": ["off", "never"],
+//     "flowtype/no-primitive-constructor-types": "off",
+//     "flowtype/no-weak-types": "warn",
+//     "flowtype/object-type-delimiter": ["off", "comma"],
+//     "flowtype/require-parameter-type": "off",
+//     "flowtype/require-return-type": "off",
+//     "flowtype/require-valid-file-annotation": "off",
+//     "flowtype/semi": ["off", "always"],
+//     "flowtype/space-after-type-colon": ["off", "always"],
+//     "flowtype/space-before-generic-bracket": ["off", "never"],
+//     "flowtype/space-before-type-colon": ["off", "never"],
+//     "flowtype/union-intersection-spacing": ["off", "always"],
+//     "flowtype/use-flow-type": "off",
+//     "flowtype/valid-syntax": "off",
+//     "generator-star-spacing": "off",
+//     "import/no-unresolved": "off",
+//     "import/no-extraneous-dependencies": "off",
+//     "jsx-a11y/anchor-is-valid": "off",
+//     "no-console": "off",
+//     "no-use-before-define": "off",
+//     "no-multi-assign": "off",
+//     "promise/param-names": "off",
+//     "promise/always-return": "off",
+//     "promise/catch-or-return": "off",
+//     "promise/no-native": "off",
+//     "lines-between-class-members": "off",
+//     "no-return-assign": "off",
+//     "react/sort-comp": [
+//       "off",
+//       {
+//         "order": [
+//           "type-annotations",
+//           "static-methods",
+//           "lifecycle",
+//           "everything-else",
+//           "render"
+//         ]
+//       }
+//     ],
+//     "react/jsx-no-bind": "off",
+//     "react/jsx-filename-extension": [
+//       "error",
+//       {
+//         "extensions": [".js", ".jsx"]
+//       }
+//     ],
+//     "react/prefer-stateless-function": "off"
+//   },
+//   "plugins": ["flowtype", "import", "promise", "compat", "react"],
+//   "settings": {
+//     "import/resolver": {
+//       "webpack": {
+//         "config": "webpack.config.eslint.js"
+//       }
+//     }
+//   }
+// }
