@@ -21,9 +21,10 @@ export default class Home extends Component<Props> {
 
     this.state = {
       loadingBalance:false,
-      devices:[],
-      userBalance:{balance:0},
-      userAddress:''
+      activeDevices:[],
+      inactiveDevices:[],
+      balance:0,
+      userAddress:'',
       
 
     };
@@ -31,25 +32,65 @@ export default class Home extends Component<Props> {
   componentDidMount(){
    let address = localStorage.getItem('walletAddress');
    if(address){
-    this.fetchDevice(address);
+    this.fetchActiveDevice(address);
+    this.fetchInactiveDevice(address);
+    this.fetchBalance(address);
    }
   }
-  fetchDevice = (walletAddress) =>{
+  fetchBalance = walletAddress =>{
+    axios.get(`http://localhost:8080/api/balance/${walletAddress}`)
+    .then(res => {
+     
+      this.setState({
+        balance:res.data.userBalance.balance
+      });
+      
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+  fetchInactiveDevice = (walletAddress) =>{
 
     this.setState({
       loadingBalance: true
     });
 
-    axios.get(`https://api.nimiqpocket.com:8080/api/device/${walletAddress}`)
+    axios.get(`http://localhost:8080/api/device/inactive/${walletAddress}`)
     .then(res => {
-      res.data.activeDevices.map(
-        device => (device.hashrate = this.humanHashes(device.hashrate))
-      );
+      // res.data.activeDevices.map(
+      //   device => (device.hashrate = this.humanHashes(device.hashrate))
+      // );
+      this.setState({
+        // isBalanceModalOpen: false,
+        // loadingBalance: false,
+
+        inactiveDevices: res.data.inactiveDevices,
+
+      });
+
+      
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+   fetchActiveDevice = (walletAddress) =>{
+
+    this.setState({
+      loadingBalance: true
+    });
+
+    axios.get(`http://localhost:8080/api/device/active/${walletAddress}`)
+    .then(res => {
+      // res.data.activeDevices.map(
+      //   device => (device.hashrate = this.humanHashes(device.hashrate))
+      // );
       this.setState({
         isBalanceModalOpen: false,
         loadingBalance: false,
 
-        devices: res.data,
+        activeDevices: res.data.activeDevices,
         userAddress:walletAddress
       });
       localStorage.setItem('walletAddress', walletAddress);
@@ -88,16 +129,17 @@ export default class Home extends Component<Props> {
     const walletAddressColumn = [
       {
         title: '设备识别号',
-        dataIndex: 'deviceId',
-        key: 'deviceId'
+        dataIndex: 'device',
+        key: 'device'
       },
       {
         title: '设备名称',
-        dataIndex: 'deviceName'
+        dataIndex: 'name'
       },
       {
         title: '实时算力',
-        dataIndex: 'hashrate'
+        dataIndex: 'hashrate',
+        render: hashrate => <span>{this.humanHashes(hashrate)}</span>
       },
       {
         title: '24小时算力',
@@ -105,7 +147,7 @@ export default class Home extends Component<Props> {
       },
       {
         title: '上次更新',
-        dataIndex: 'lastUpdate',
+        dataIndex: 'datetime',
         render: lastUpdate => <a>{ moment(lastUpdate).fromNow()}</a>,
       }
     ];
@@ -114,7 +156,7 @@ export default class Home extends Component<Props> {
       <div data-tid="container">
          
       <Card
-        title={`${'当前矿池余额'} : ${this.state.userBalance.balance / 100000} NIM，钱包地址：${this.state.userAddress}`}
+        title={`${'当前矿池余额'} : ${this.state.balance / 100000} NIM，钱包地址：${this.state.userAddress}`}
         bordered={true}
       >
        <Search
@@ -125,23 +167,23 @@ export default class Home extends Component<Props> {
           />
 
         <Tabs type="card">
-    <TabPane tab={<span>在线矿机 <Badge count={this.state.devices.activeDevices && this.state.devices.totalActiveDevices} style={{ backgroundColor: '#52c41a',fontSize:12 }} /></span>} key="1" >
-            <Table pagination={{pageSize:50, pageSizeOptions: ['50', '100', '200']}} rowKey={record => record.deviceId} columns={walletAddressColumn} dataSource={this.state.devices.activeDevices}  loading={this.state.loadingBalance} />
+    <TabPane tab={<span>在线矿机 <Badge count={this.state.activeDevices && this.state.activeDevices.length} overflowCount={999} style={{ backgroundColor: '#52c41a',fontSize:12 }} /></span>} key="1" >
+            <Table pagination={{pageSize:50, pageSizeOptions: ['50', '100', '200']}} rowKey={record => record.deviceId} columns={walletAddressColumn} dataSource={this.state.activeDevices}  loading={this.state.loadingBalance} />
           </TabPane>
-          <TabPane tab={<span>掉线矿机 <Badge count={this.state.devices.inactiveDevices && this.state.devices.inactiveDevices.length} /></span>} key="2" >
-            <Table pagination={{pageSize:50, pageSizeOptions: ['50', '100', '200']}} rowKey={record => record.deviceId} columns={walletAddressColumn} dataSource={this.state.devices.inactiveDevices}  loading={this.state.loadingBalance} />
+          <TabPane tab={<span>掉线矿机 <Badge overflowCount={999} count={this.state.inactiveDevices && this.state.inactiveDevices.length} /></span>} key="2" >
+            <Table pagination={{pageSize:50, pageSizeOptions: ['50', '100', '200']}} rowKey={record => record.deviceId} columns={walletAddressColumn} dataSource={this.state.inactiveDevices}  loading={this.state.loadingBalance} />
           </TabPane>
         </Tabs>
 
         <p>
           {'在线矿机'} :{' '}
-          {this.state.devices.activeDevices &&
-            this.state.devices.totalActiveDevices}{' '}
+          {this.state.activeDevices &&
+            this.state.activeDevices.length}{' '}
           |   {'当前总算力'} :{' '}
-          {this.state.devices.activeDevices &&
+          {/* {this.state.devices.activeDevices &&
             this.humanHashes(
               this.state.devices.totalActiveDevicesHashrate
-            )}{' '}
+            )}{' '} */}
         </p>
 
         </Card>
