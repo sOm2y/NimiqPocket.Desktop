@@ -12,6 +12,7 @@
  */
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
+import {appUpdater} from './autoUpdate';
 
 let mainWindow = null;
 
@@ -80,6 +81,7 @@ app.on('ready', async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+    appUpdater();
   });
 
   mainWindow.on('closed', () => {
